@@ -1,5 +1,7 @@
 import pizza from './pizza';
+import ingredient from './ingredient';
 
 export {
-  pizza
+  pizza,
+  ingredient
 };
