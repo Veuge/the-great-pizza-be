@@ -1,0 +1,21 @@
+{
+  "name": "pizza-backend",
+  "version": "0.1.0",
+  "description": "pizza backend",
+  "main": "bin/server.js",
+  "scripts": {
+    "start": "DB_NAME=pizza_db DB_USER=pizza DB_PASS=pizza DB_HOST=localhost nodemon bin/server.js --exec babel-node --"
+  },
+  "author": "Veronica Clavijo",
+  "license": "MIT",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mysql": "^2.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
