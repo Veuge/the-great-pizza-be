@@ -49,15 +49,22 @@ class PizzaService {
       })
     });
   }
-  update(id, {name, price}) {
+  update(id, {name, price, ingredients}) {
     return new Promise((resolve, reject) => {
-      conn.query('update pizza set name=?, price=? where id = ?', [name, price, id], (err, result) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
+      conn.query('update pizza set name=?, price=? where id = ?', [name, price, id], 
+        async (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            await this.deleteAllPizzaIngredients(id);
+            for(let i = 0; i < ingredients.length; i++) {
+              const ing = ingredients[i];
+              await this.createPizzaIngredient(id, ing.id);
+            }
+            resolve(result);
+          }
         }
-      })
+      )
     });
   }
   delete(id) {
@@ -101,6 +108,18 @@ class PizzaService {
           }
         }
       )
+    })
+  }
+  deleteAllPizzaIngredients(pizzaId) {
+    return new Promise((resolve, reject) => {
+      conn.query(`delete from pizza_ingredient where pizzaId=?`, [pizzaId],
+      (err, result) => {
+        if(err) {
+          reject(err);
+        } else {
+          resolve(result)
+        }
+      })
     })
   }
 }

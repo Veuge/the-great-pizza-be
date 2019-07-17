@@ -31,7 +31,8 @@ router.put('/:id', asyncMiddleware(async (req, res) => {
   const pizzaId = req.params.id;
   const data = {
     name: req.body.name,
-    price: req.body.price
+    price: req.body.price,
+    ingredients: req.body.ingredients || []
   };
 
   const pizza = await pizzaService.getById(pizzaId);
