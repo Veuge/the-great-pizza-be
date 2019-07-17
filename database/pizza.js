@@ -4,10 +4,15 @@ import { NotFoundError } from "./errors";
 class PizzaService {
   getAll() {
     return new Promise((resolve, reject) => {
-      conn.query('select * from pizza', (err, result) => {
+      conn.query('select * from pizza', async (err, result) => {
         if (err) {
           reject(err);
         } else {
+          for (let i = 0; i < result.length; ++i) {
+            const pizza = result[i];
+            const ingredients = await this.getIngredientsByPizza(pizza.id);
+            pizza.ingredients = ingredients;
+          }
           resolve(result)
         }
       })
@@ -60,6 +65,23 @@ class PizzaService {
         }
       })
     });
+  }
+  getIngredientsByPizza(pizzaId) {
+    return new Promise((resolve, reject) => {
+      conn.query(
+        `select * from ingredient 
+        inner join pizza_ingredient on ingredient.id = pizza_ingredient.ingredientId 
+        where pizza_ingredient.pizzaId=?`, 
+        [pizzaId], 
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      )
+    })
   }
 }
 
