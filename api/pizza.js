@@ -20,7 +20,8 @@ router.get('/:id', asyncMiddleware(async (req, res, next) => {
 router.post('/', asyncMiddleware(async (req, res) => {
   const data = {
     name: req.body.name,
-    price: req.body.price
+    price: req.body.price,
+    ingredients: req.body.ingredients
   };
   const result = await pizzaService.create(data);
   return res.status(200).send(result);

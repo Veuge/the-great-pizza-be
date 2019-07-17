@@ -33,12 +33,17 @@ class PizzaService {
       });
     });
   }
-  create({name, price}) {
+  create({name, price, ingredients}) {
     return new Promise((resolve, reject) => {
-      conn.query('insert into pizza(name, price) values(?, ?)', [name, price] , (err, result) => {
+      conn.query('insert into pizza(name, price) values(?, ?)', [name, price] , async (err, result) => {
         if (err) {
           reject(err);
         } else {
+          const { insertId } = result;
+          for(let i = 0; i < ingredients.length; i++) {
+            const ingredient = ingredients[i];
+            await this.createPizzaIngredient(insertId, ingredient.id);
+          }
           resolve(result);
         }
       })
@@ -75,6 +80,21 @@ class PizzaService {
         [pizzaId], 
         (err, result) => {
           if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      )
+    })
+  }
+  createPizzaIngredient(pizzaId, ingredientId) {
+    return new Promise((resolve, reject) => {
+      conn.query(
+        `insert into pizza_ingredient(pizzaId, ingredientId) values (?, ?)`,
+        [pizzaId, ingredientId],
+        (err, result) => {
+          if(err) {
             reject(err);
           } else {
             resolve(result);
