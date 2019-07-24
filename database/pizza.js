@@ -20,13 +20,15 @@ class PizzaService {
   }
   getById(id) {
     return new Promise((resolve, reject) => {
-      conn.query('select * from pizza where id = ?', id, (err, result) => {
+      conn.query('select * from pizza where id = ?', id, async (err, result) => {
         if (err) {
           reject(err);
         } else {
           if (result.length === 0) {
             reject(new NotFoundError());
           } else {
+            const ingredients = await this.getIngredientsByPizza(id);
+            result[0].ingredients = ingredients;
             resolve(result[0]);
           }
         }
