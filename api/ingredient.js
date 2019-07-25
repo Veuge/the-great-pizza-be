@@ -8,13 +8,21 @@ const router = express.Router();
 
 router.get('/', asyncMiddleware(async (req, res) => {
   const data = await ingredientService.getAll();
-  return res.status(200).send(data);
+  const response = {
+    ingredients: data,
+    message: "List of ingredients retrieved successfully."
+  }
+  return res.status(200).send(response);
 }));
 
 router.get('/:id', asyncMiddleware(async (req, res, next) => {
   const ingredientId = req.params.id;
   const ingredient = await ingredientService.getById(ingredientId);
-  return res.status(200).send(ingredient);
+  const response = {
+    ingredient,
+    message: `Ingredient with ${ingredientId} retrieved successfully.`
+  };
+  return res.status(200).send(response);
 }));
 
 router.post('/', asyncMiddleware(async (req, res) => {
@@ -22,6 +30,7 @@ router.post('/', asyncMiddleware(async (req, res) => {
     name: req.body.name
   };
   const result = await ingredientService.create(data);
+  result.message = "Ingredient created successfully."
   return res.status(200).send(result);
 }));
 
@@ -29,6 +38,7 @@ router.delete('/:id', asyncMiddleware(async (req, res) => {
   const ingredientId = req.params.id;
   const ingredient = await ingredientService.getById(ingredientId);
   const result = await ingredientService.delete(ingredient.id);
+  result.message = `Ingredient with id ${ingredientId} deleted successfully.`;
   return res.status(200).send(result);
 }));
 
@@ -39,6 +49,7 @@ router.put('/:id', asyncMiddleware(async (req, res) => {
   };
   const ingredient = await ingredientService.getById(ingredientId);
   const result = await ingredientService.update(ingredient.id, data);
+  result.message = `Ingredient with id ${ingredientId} updated successfully.`
   return res.status(200).send(result);
 }));
 
